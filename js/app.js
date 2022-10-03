@@ -22,5 +22,5 @@ rules:[
     }
 
     ]);
-
+console.log(myForm);
 });

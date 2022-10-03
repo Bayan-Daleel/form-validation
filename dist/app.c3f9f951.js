@@ -149,10 +149,56 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.helper = void 0;
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
 var errors = [];
+
+var _check = function _check(err) {
+  return errors.find(function (error) {
+    return error.name === err.name;
+  });
+};
+
 var helper = {
   errorHundler: function errorHundler(error) {
-    errors.push(error);
+    var check = _check(error);
+
+    if (check) {
+      var _check$rules;
+
+      (_check$rules = check.rules).push.apply(_check$rules, _toConsumableArray(error.rules));
+    } else {
+      errors.push(error);
+    }
+  },
+  buildSchema: function buildSchema() {
+    var outputSchema;
+
+    if (errors.length) {
+      outputSchema = {
+        valid: false,
+        errors: _toConsumableArray(errors)
+      };
+      errors = [];
+    } else {
+      outputSchema = {
+        valid: true,
+        errors: []
+      };
+    }
+
+    return outputSchema;
   }
 };
 exports.helper = helper;
@@ -176,7 +222,13 @@ var codeZoneInputFilteration = function codeZoneInputFilteration(input) {
 
 
     if (valedationerror) {
-      _helper.helper.errorHundler();
+      _helper.helper.errorHundler({
+        name: input.name,
+        rules: [{
+          name: rule.name,
+          errMsg: valedationerror
+        }]
+      });
     }
   }); //console.log(el);
 };
@@ -192,15 +244,18 @@ exports.codeZoneFormValidation = void 0;
 
 var _codeZoneInputFilteration = require("./codeZoneInputFilteration");
 
+var _helper = require("./helper");
+
 var codeZoneFormValidation = function codeZoneFormValidation(inputs) {
-  console.log(inputs);
+  //console.log(inputs);
   inputs.forEach(function (input) {
     (0, _codeZoneInputFilteration.codeZoneInputFilteration)(input);
   });
+  return _helper.helper.buildSchema();
 };
 
 exports.codeZoneFormValidation = codeZoneFormValidation;
-},{"./codeZoneInputFilteration":"js/codeZoneInputFilteration.js"}],"js/app.js":[function(require,module,exports) {
+},{"./codeZoneInputFilteration":"js/codeZoneInputFilteration.js","./helper":"js/helper.js"}],"js/app.js":[function(require,module,exports) {
 "use strict";
 
 var _codeZoneFormValidation = require("./codeZoneFormValidation");
@@ -230,6 +285,7 @@ document.querySelector('#submitForm').addEventListener('click', function (e) {
       errMsg: 'minLength error'
     }]
   }]);
+  console.log(myForm);
 });
 },{"./codeZoneFormValidation":"js/codeZoneFormValidation.js"}],"../../../Users/Bayan/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
@@ -259,7 +315,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52617" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53709" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
