@@ -117,78 +117,61 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"js/codeZoneValidationStrategy.js":[function(require,module,exports) {
+})({"node_modules/bayan-form-validation-package/codeZoneValidationStrategy.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.codeZoneValidationStrategy = void 0;
-var codeZoneValidationStrategy = {
-  required: function required(inputValue, rule) {
+const codeZoneValidationStrategy = {
+  required: (inputValue, rule) => {
     if (rule.value && !inputValue) {
       return rule.errMsg; // console.error(rule.errMsg);
     }
   },
-  maxLength: function maxLength(inputValue, rule) {
+  maxLength: (inputValue, rule) => {
     if (inputValue.length > rule.value || !inputValue) {
       return rule.errMsg;
     }
   },
-  minLength: function minLength(inputValue, rule) {
+  minLength: (inputValue, rule) => {
     if (inputValue.length < rule.value || !inputValue) {
       return rule.errMsg;
     }
   }
 };
 exports.codeZoneValidationStrategy = codeZoneValidationStrategy;
-},{}],"js/helper.js":[function(require,module,exports) {
+},{}],"node_modules/bayan-form-validation-package/helper.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.helper = void 0;
+let errors = [];
 
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
-
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
-
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
-var errors = [];
-
-var _check = function _check(err) {
-  return errors.find(function (error) {
-    return error.name === err.name;
-  });
+const _check = err => {
+  return errors.find(error => error.name === err.name);
 };
 
-var helper = {
-  errorHundler: function errorHundler(error) {
-    var check = _check(error);
+const helper = {
+  errorHundler: error => {
+    let check = _check(error);
 
     if (check) {
-      var _check$rules;
-
-      (_check$rules = check.rules).push.apply(_check$rules, _toConsumableArray(error.rules));
+      check.rules.push(...error.rules);
     } else {
       errors.push(error);
     }
   },
-  buildSchema: function buildSchema() {
-    var outputSchema;
+  buildSchema: () => {
+    let outputSchema;
 
     if (errors.length) {
       outputSchema = {
         valid: false,
-        errors: _toConsumableArray(errors)
+        errors: [...errors]
       };
       errors = [];
     } else {
@@ -202,7 +185,7 @@ var helper = {
   }
 };
 exports.helper = helper;
-},{}],"js/codeZoneInputFilteration.js":[function(require,module,exports) {
+},{}],"node_modules/bayan-form-validation-package/codeZoneInputFilteration.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -214,11 +197,11 @@ var _codeZoneValidationStrategy = require("./codeZoneValidationStrategy");
 
 var _helper = require("./helper");
 
-var codeZoneInputFilteration = function codeZoneInputFilteration(input) {
-  var el = document.querySelector("input[name=".concat(input.name, "]"));
-  input.rules.forEach(function (rule) {
+const codeZoneInputFilteration = input => {
+  let el = document.querySelector(`input[name=${input.name}]`);
+  input.rules.forEach(rule => {
     //we will use strategy design pattern so will make object
-    var valedationerror = _codeZoneValidationStrategy.codeZoneValidationStrategy[rule.name](el.value, rule); //console.log(valedationerror);
+    let valedationerror = _codeZoneValidationStrategy.codeZoneValidationStrategy[rule.name](el.value, rule); //console.log(valedationerror);
 
 
     if (valedationerror) {
@@ -234,7 +217,7 @@ var codeZoneInputFilteration = function codeZoneInputFilteration(input) {
 };
 
 exports.codeZoneInputFilteration = codeZoneInputFilteration;
-},{"./codeZoneValidationStrategy":"js/codeZoneValidationStrategy.js","./helper":"js/helper.js"}],"js/codeZoneFormValidation.js":[function(require,module,exports) {
+},{"./codeZoneValidationStrategy":"node_modules/bayan-form-validation-package/codeZoneValidationStrategy.js","./helper":"node_modules/bayan-form-validation-package/helper.js"}],"node_modules/bayan-form-validation-package/codeZoneFormValidation.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -246,23 +229,23 @@ var _codeZoneInputFilteration = require("./codeZoneInputFilteration");
 
 var _helper = require("./helper");
 
-var codeZoneFormValidation = function codeZoneFormValidation(inputs) {
+const codeZoneFormValidation = inputs => {
   //console.log(inputs);
-  inputs.forEach(function (input) {
+  inputs.forEach(input => {
     (0, _codeZoneInputFilteration.codeZoneInputFilteration)(input);
   });
   return _helper.helper.buildSchema();
 };
 
 exports.codeZoneFormValidation = codeZoneFormValidation;
-},{"./codeZoneInputFilteration":"js/codeZoneInputFilteration.js","./helper":"js/helper.js"}],"js/app.js":[function(require,module,exports) {
+},{"./codeZoneInputFilteration":"node_modules/bayan-form-validation-package/codeZoneInputFilteration.js","./helper":"node_modules/bayan-form-validation-package/helper.js"}],"js/app.js":[function(require,module,exports) {
 "use strict";
 
-var _codeZoneFormValidation = require("./codeZoneFormValidation");
+var _bayanFormValidationPackage = require("bayan-form-validation-package");
 
 document.querySelector('#submitForm').addEventListener('click', function (e) {
   e.preventDefault();
-  var myForm = (0, _codeZoneFormValidation.codeZoneFormValidation)([{
+  var myForm = (0, _bayanFormValidationPackage.codeZoneFormValidation)([{
     name: 'username',
     rules: [{
       name: 'required',
@@ -287,7 +270,7 @@ document.querySelector('#submitForm').addEventListener('click', function (e) {
   }]);
   console.log(myForm);
 });
-},{"./codeZoneFormValidation":"js/codeZoneFormValidation.js"}],"../../../Users/Bayan/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"bayan-form-validation-package":"node_modules/bayan-form-validation-package/codeZoneFormValidation.js"}],"../../../Users/Bayan/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -315,7 +298,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53709" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58345" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

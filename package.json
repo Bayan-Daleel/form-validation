@@ -1,0 +1,23 @@
+{
+  "name": "form-validation-package-npm",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Bayan-Daleel/form-validation.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Bayan-Daleel/form-validation/issues"
+  },
+  "homepage": "https://github.com/Bayan-Daleel/form-validation#readme",
+  "dependencies": {
+    "bayan-form-validation-package": "^1.0.0"
+  }
+}

@@ -1,4 +1,4 @@
-import {codeZoneFormValidation} from './codeZoneFormValidation';
+import {codeZoneFormValidation} from 'bayan-form-validation-package';
 
 document.querySelector('#submitForm')
 .addEventListener('click',(e)=>{
