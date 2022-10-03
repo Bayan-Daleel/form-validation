@@ -117,7 +117,46 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"js/codeZoneInputFilteration.js":[function(require,module,exports) {
+})({"js/codeZoneValidationStrategy.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.codeZoneValidationStrategy = void 0;
+var codeZoneValidationStrategy = {
+  required: function required(inputValue, rule) {
+    if (rule.value && !inputValue) {
+      return rule.errMsg; // console.error(rule.errMsg);
+    }
+  },
+  maxLength: function maxLength(inputValue, rule) {
+    if (inputValue.length > rule.value || !inputValue) {
+      return rule.errMsg;
+    }
+  },
+  minLength: function minLength(inputValue, rule) {
+    if (inputValue.length < rule.value || !inputValue) {
+      return rule.errMsg;
+    }
+  }
+};
+exports.codeZoneValidationStrategy = codeZoneValidationStrategy;
+},{}],"js/helper.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.helper = void 0;
+var errors = [];
+var helper = {
+  errorHundler: function errorHundler(error) {
+    errors.push(error);
+  }
+};
+exports.helper = helper;
+},{}],"js/codeZoneInputFilteration.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -125,16 +164,25 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.codeZoneInputFilteration = void 0;
 
+var _codeZoneValidationStrategy = require("./codeZoneValidationStrategy");
+
+var _helper = require("./helper");
+
 var codeZoneInputFilteration = function codeZoneInputFilteration(input) {
   var el = document.querySelector("input[name=".concat(input.name, "]"));
-  input.rules.foreach(function (rule) {
-    //we will use strategy design pattern
-    if (rule.name === 'required') {}
+  input.rules.forEach(function (rule) {
+    //we will use strategy design pattern so will make object
+    var valedationerror = _codeZoneValidationStrategy.codeZoneValidationStrategy[rule.name](el.value, rule); //console.log(valedationerror);
+
+
+    if (valedationerror) {
+      _helper.helper.errorHundler();
+    }
   }); //console.log(el);
 };
 
 exports.codeZoneInputFilteration = codeZoneInputFilteration;
-},{}],"js/codeZoneFormValidation.js":[function(require,module,exports) {
+},{"./codeZoneValidationStrategy":"js/codeZoneValidationStrategy.js","./helper":"js/helper.js"}],"js/codeZoneFormValidation.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -211,7 +259,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51061" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52617" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
